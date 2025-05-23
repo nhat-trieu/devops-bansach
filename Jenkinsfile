@@ -22,12 +22,14 @@ pipeline {
         }
 
         stage('Docker Build') {
+            agent any
             steps {
-                sh 'docker build -t webbansach .'
+                sh 'docker build -t webbansach Project_BanSach'
             }
         }
 
         stage('Run App') {
+            agent any
             steps {
                 sh 'docker run -d -p 8081:80 --name webbansach webbansach || true'
             }
