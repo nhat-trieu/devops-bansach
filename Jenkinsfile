@@ -6,12 +6,12 @@ pipeline {
         PATH = "/home/ubuntu/.dotnet:$PATH"
     }
 
-    stages {
-        stage('Clone') {
-            steps {
-                git 'https://github.com/nhat-trieu/devops-bansach.git'
-            }
-        }
+   // stages {
+    //    stage('Clone') {
+     //       steps {
+      //          git 'https://github.com/nhat-trieu/devops-bansach.git'
+     //       }
+     //   }
 
         stage('Build') {
             steps {
