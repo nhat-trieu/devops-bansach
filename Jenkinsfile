@@ -1,10 +1,12 @@
 pipeline {
-    agent any
+    agent none
 
     stages {
         stage('Build') {
             agent {
-                docker { image 'mcr.microsoft.com/dotnet/sdk:6.0' }
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
             }
             steps {
                 sh 'dotnet restore Project_BanSach/Project_BanSach.csproj'
@@ -14,7 +16,9 @@ pipeline {
 
         stage('Test') {
             agent {
-                docker { image 'mcr.microsoft.com/dotnet/sdk:6.0' }
+                docker {
+                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
+                }
             }
             steps {
                 sh 'dotnet test Project_BanSach/Project_BanSach.csproj --no-build --verbosity normal'
