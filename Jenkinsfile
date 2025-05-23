@@ -1,9 +1,8 @@
 pipeline {
-    agent any
-
-    environment {
-        DOTNET_ROOT = '/home/ubuntu/.dotnet'
-        PATH = "/home/ubuntu/.dotnet:$PATH"
+    agent {
+        docker {
+            image 'mcr.microsoft.com/dotnet/sdk:6.0'
+        }
     }
 
     stages {
