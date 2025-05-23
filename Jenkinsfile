@@ -4,9 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
-                }
+                docker { image 'mcr.microsoft.com/dotnet/sdk:6.0' }
             }
             steps {
                 sh 'dotnet restore'
@@ -16,9 +14,7 @@ pipeline {
 
         stage('Test') {
             agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:6.0'
-                }
+                docker { image 'mcr.microsoft.com/dotnet/sdk:6.0' }
             }
             steps {
                 sh 'dotnet test --no-build --verbosity normal'
