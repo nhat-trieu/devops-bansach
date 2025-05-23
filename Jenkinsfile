@@ -7,8 +7,8 @@ pipeline {
                 docker { image 'mcr.microsoft.com/dotnet/sdk:6.0' }
             }
             steps {
-                sh 'dotnet restore'
-                sh 'dotnet build --configuration Release'
+                sh 'dotnet restore Project_BanSach/Project_BanSach.csproj'
+                sh 'dotnet build Project_BanSach/Project_BanSach.csproj -c Release'
             }
         }
 
@@ -17,7 +17,7 @@ pipeline {
                 docker { image 'mcr.microsoft.com/dotnet/sdk:6.0' }
             }
             steps {
-                sh 'dotnet test --no-build --verbosity normal'
+                sh 'dotnet test Project_BanSach/Project_BanSach.csproj --no-build --verbosity normal'
             }
         }
 
