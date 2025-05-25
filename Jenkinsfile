@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
 
     stages {
         stage('Build') {
@@ -9,8 +9,8 @@ pipeline {
                 }
             }
             steps {
-                sh 'dotnet restore'
-                sh 'dotnet build --configuration Release'
+                sh 'dotnet restore Project_BanSach/Project_BanSach.csproj'
+                sh 'dotnet build Project_BanSach/Project_BanSach.csproj -c Release'
             }
         }
 
@@ -21,19 +21,19 @@ pipeline {
                 }
             }
             steps {
-                sh 'dotnet test --no-build --verbosity normal'
+                sh 'dotnet test Project_BanSach/Project_BanSach.csproj --no-build --verbosity normal'
             }
         }
 
         stage('Docker Build') {
-            agent { label 'docker' } // 👉 Thêm để đảm bảo chạy trên agent có Docker
+            agent any
             steps {
                 sh 'docker build -t webbansach Project_BanSach'
             }
         }
 
         stage('Run App') {
-            agent { label 'docker' } // 👉 Thêm để đảm bảo chạy trên host
+            agent any
             steps {
                 sh 'docker run -d -p 8081:80 --name webbansach webbansach || true'
             }
