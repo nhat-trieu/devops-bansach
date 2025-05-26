@@ -1,29 +1,26 @@
 pipeline {
     agent any
 
-    environment {
-        SONARQUBE_URL = "http://ec2-3-107-91-107.ap-southeast-2.compute.amazonaws.com:9000"
-    }
-
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
         timeout(time: 20, unit: 'MINUTES')
     }
 
     stages {
-        stage('SonarQube Begin') {
+        stage('SonarCloud Begin') {
             steps {
-                withCredentials([string(credentialsId: 'sonarqube-token-id', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
                         docker run --rm \
                           -v $PWD:/app \
                           -w /app \
                           mcr.microsoft.com/dotnet/sdk:6.0 \
                           bash -c "dotnet tool install --global dotnet-sonarscanner && \
-                                   export PATH=\"$PATH:/root/.dotnet/tools\" && \
-                                   dotnet sonarscanner begin /k:'bansach' \
-                                   /d:sonar.host.url='$SONARQUBE_URL' \
-                                   /d:sonar.login='$SONAR_TOKEN'"
+                                   export PATH=\\\"$PATH:/root/.dotnet/tools\\\" && \
+                                   dotnet sonarscanner begin /k:'nhat-trieu_devops-bansach' \
+                                   /o:'nhat-trieu' \
+                                   /d:sonar.host.url='https://sonarcloud.io' \
+                                   /d:sonar.login=$SONAR_TOKEN"
                     '''
                 }
             }
@@ -44,16 +41,16 @@ pipeline {
             }
         }
 
-        stage('SonarQube End') {
+        stage('SonarCloud End') {
             steps {
-                withCredentials([string(credentialsId: 'bansach', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'sonarcloud-token', variable: 'SONAR_TOKEN')]) {
                     sh '''
                         docker run --rm \
                           -v $PWD:/app \
                           -w /app \
                           mcr.microsoft.com/dotnet/sdk:6.0 \
-                          bash -c "export PATH=\"$PATH:/root/.dotnet/tools\" && \
-                                   dotnet sonarscanner end /d:sonar.login='$SONAR_TOKEN'"
+                          bash -c "export PATH=\\\"$PATH:/root/.dotnet/tools\\\" && \
+                                   dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN"
                     '''
                 }
             }
