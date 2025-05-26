@@ -48,5 +48,13 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         REPORT_PATH=$(find . -type f -name 'coverage.opencover.xml' | head -n 1)
-        echo "Coverage report: $REPORT_PATH"
-        dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN" /d:sonar.cs.opencover.reportsPaths="$REPORT_PATH"
+        
+        if [ -z "$REPORT_PATH" ]; then
+          echo "❌ Không tìm thấy file coverage.opencover.xml"
+          exit 1
+        fi
+
+        echo "✅ Coverage report: $REPORT_PATH"
+        dotnet sonarscanner end \
+          /d:sonar.login="$SONAR_TOKEN" \
+          /d:sonar.cs.opencover.reportsPaths="$REPORT_PATH"
