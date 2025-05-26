@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     options {
-        // Giữ lại tối đa 3 bản build gần nhất
         buildDiscarder(logRotator(numToKeepStr: '3'))
-        // Ngắt nếu build quá 20 phút
         timeout(time: 20, unit: 'MINUTES')
     }
 
@@ -26,7 +24,9 @@ pipeline {
 
         stage('Docker Build Image') {
             steps {
-                sh 'docker build -t webbansach Project_BanSach'
+                sh '''
+                    docker build -t webbansach -f Dockerfile .
+                '''
             }
         }
 
@@ -40,3 +40,4 @@ pipeline {
         }
     }
 }
+
