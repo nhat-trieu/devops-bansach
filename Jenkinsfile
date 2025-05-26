@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('SonarQube Begin') {
             steps {
-                withCredentials([string(credentialsId: 'bansach', variable: 'sqp_7f73df179a1cff15bae29385e257728ab3952872')]) {
+                withCredentials([string(credentialsId: 'sonarqube-token-id', variable: 'SONAR_TOKEN')]) {
                     sh '''
                         docker run --rm \
                           -v $PWD:/app \
