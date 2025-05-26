@@ -35,21 +35,33 @@ jobs:
           /o:"nhat-trieu" \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.login="$SONAR_TOKEN" \
-          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+          /d:sonar.cs.opencover.reportsPaths="coverage-report/coverage.opencover.xml"
 
     - name: Build, Test, and Collect Coverage
       run: |
         dotnet restore Project_BanSach/Project_BanSach.csproj
         dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-        dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj --no-build --collect:"XPlat Code Coverage"
+        dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj \
+          --no-build \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults
 
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate opencover report
+      run: |
+        reportgenerator \
+          -reports:"TestResults/**/coverage.cobertura.xml" \
+          -targetdir:"coverage-report" \
+          -reporttypes:Opencover
 
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        REPORT_PATH=$(find . -type f -name 'coverage.opencover.xml' | head -n 1)
-        
+        REPORT_PATH=$(find coverage-report -type f -name 'coverage.opencover.xml' | head -n 1)
+
         if [ -z "$REPORT_PATH" ]; then
           echo "❌ Không tìm thấy file coverage.opencover.xml"
           exit 1
