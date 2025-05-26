@@ -15,10 +15,10 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@v3
 
-    - name: Setup .NET 6 SDK
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: '6.0.x' 
 
     - name: Install SonarScanner
       run: dotnet tool install --global dotnet-sonarscanner
@@ -40,9 +40,7 @@ jobs:
       run: |
         dotnet restore Project_BanSach/Project_BanSach.csproj
         dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-        dotnet test Project_BanSach/Project_BanSach.csproj --no-build
-
-
+        dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj --no-build
 
     - name: End SonarCloud analysis
       env:
