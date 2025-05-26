@@ -34,15 +34,19 @@ jobs:
           /k:"nhat-trieu_devops-bansach" \
           /o:"nhat-trieu" \
           /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.login="$SONAR_TOKEN"
+          /d:sonar.login="$SONAR_TOKEN" \
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
-    - name: Restore, Build, and Test
+    - name: Build, Test, and Collect Coverage
       run: |
         dotnet restore Project_BanSach/Project_BanSach.csproj
         dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-        dotnet test Project_BanSach/Project_BanSach.csproj --no-build
+        dotnet test Project_BanSach/Project_BanSach.csproj --no-build --collect:"XPlat Code Coverage"
 
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
+      run: |
+        REPORT_PATH=$(find . -type f -name 'coverage.opencover.xml' | head -n 1)
+        echo "Coverage report: $REPORT_PATH"
+        dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN" /d:sonar.cs.opencover.reportsPaths="$REPORT_PATH"
