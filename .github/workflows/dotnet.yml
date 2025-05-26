@@ -42,6 +42,8 @@ jobs:
         dotnet build Project_BanSach/Project_BanSach.csproj -c Release
         dotnet test Project_BanSach/Project_BanSach.csproj --no-build
 
+
+
     - name: End SonarCloud analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
