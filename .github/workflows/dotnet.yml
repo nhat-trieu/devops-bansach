@@ -8,66 +8,41 @@ on:
 
 jobs:
   build:
-    name: Build, Test, and Analyze
+    name: Build and Analyze
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source
-      uses: actions/checkout@v3
+      - name: Checkout source
+        uses: actions/checkout@v3
 
-    - name: Setup .NET 8 SDK
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '8.0.x'
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Install SonarScanner
-      run: dotnet tool install --global dotnet-sonarscanner
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
 
-    - name: Add dotnet tools to PATH
-      run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
-    - name: Begin SonarCloud analysis
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        dotnet sonarscanner begin \
-          /k:"nhat-trieu_devops-bansach" \
-          /o:"nhat-trieu" \
-          /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.login="$SONAR_TOKEN" \
-          /d:sonar.cs.opencover.reportsPaths="coverage-report/coverage.opencover.xml"
+      - name: Begin SonarCloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin \
+            /k:"nhat-trieu_devops-bansach" \
+            /o:"nhat-trieu" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.login="$SONAR_TOKEN"
 
-	- name: Build, Test, and Collect Coverage
- 	 run: |
-   	 dotnet restore
-   	 dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-    	dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj \
-     	 --no-build \
-     	 /p:CollectCoverage=true \
-      	/p:CoverletOutputFormat=opencover \
-      	/p:CoverletOutput=./TestResults/coverage.opencover.xml
-    - name: Install ReportGenerator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+      - name: Restore, Build, and Test
+        run: |
+          dotnet restore Project_BanSach/Project_BanSach.csproj
+          dotnet build Project_BanSach/Project_BanSach.csproj -c Release
+          dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj --no-build
 
-    - name: Generate opencover report
-      run: |
-        reportgenerator \
-          -reports:"TestResults/**/coverage.cobertura.xml" \
-          -targetdir:"coverage-report" \
-          -reporttypes:Opencover
-
-    - name: End SonarCloud analysis
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        REPORT_PATH=$(find coverage-report -type f -name 'coverage.opencover.xml' | head -n 1)
-
-        if [ -z "$REPORT_PATH" ]; then
-          echo "❌ Không tìm thấy file coverage.opencover.xml"
-          exit 1
-        fi
-
-        echo "✅ Coverage report: $REPORT_PATH"
-        dotnet sonarscanner end \
-          /d:sonar.login="$SONAR_TOKEN" \
-          /d:sonar.cs.opencover.reportsPaths="$REPORT_PATH"
+      - name: End SonarCloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
