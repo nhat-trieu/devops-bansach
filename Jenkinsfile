@@ -28,5 +28,11 @@ pipeline {
                 '''
             }
         }
+	stage('Cleanup') {
+    		steps {
+        sh 'rm -rf Project_BanSach/bin Project_BanSach/obj'
+   	 }
+	}
+
     }
 }
