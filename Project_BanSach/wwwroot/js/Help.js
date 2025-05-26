@@ -13,7 +13,8 @@
             response(res)
         },
         error: function (error) {
-            alert(error);
+            console.log("Chi tiết lỗi:", error); // ghi log ra console để debug
+            alert("Lỗi khi gửi yêu cầu: " + (error.responseText || JSON.stringify(error)));
         }
     });
 }
