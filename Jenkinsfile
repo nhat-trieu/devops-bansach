@@ -1,18 +1,13 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Build & Test') {
-            steps {
-                sh '''
-                    dotnet restore Project_BanSach/Project_BanSach.csproj
-                    dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-                    dotnet test Project_BanSach/Project_BanSach.csproj --no-build
-                '''
-            }
-        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        timeout(time: 10, unit: 'MINUTES')
+    }
 
-        stage('Docker Build') {
+    stages {
+        stage('Docker Build Image') {
             steps {
                 sh '''
                     docker build -t webbansach -f Dockerfile .
@@ -28,11 +23,5 @@ pipeline {
                 '''
             }
         }
-	stage('Cleanup') {
-    		steps {
-        sh 'rm -rf Project_BanSach/bin Project_BanSach/obj'
-   	 }
-	}
-
     }
 }
