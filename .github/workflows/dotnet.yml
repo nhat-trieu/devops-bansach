@@ -37,15 +37,15 @@ jobs:
           /d:sonar.login="$SONAR_TOKEN" \
           /d:sonar.cs.opencover.reportsPaths="coverage-report/coverage.opencover.xml"
 
-    - name: Build, Test, and Collect Coverage
-      run: |
-        dotnet restore Project_BanSach/Project_BanSach.csproj
-        dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-        dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj \
-          --no-build \
-          --collect:"XPlat Code Coverage" \
-          --results-directory ./TestResults
-
+	- name: Build, Test, and Collect Coverage
+ 	 run: |
+   	 dotnet restore
+   	 dotnet build Project_BanSach/Project_BanSach.csproj -c Release
+    	dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj \
+     	 --no-build \
+     	 /p:CollectCoverage=true \
+      	/p:CoverletOutputFormat=opencover \
+      	/p:CoverletOutput=./TestResults/coverage.opencover.xml
     - name: Install ReportGenerator
       run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
