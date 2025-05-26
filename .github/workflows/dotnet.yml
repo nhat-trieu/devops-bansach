@@ -41,7 +41,8 @@ jobs:
       run: |
         dotnet restore Project_BanSach/Project_BanSach.csproj
         dotnet build Project_BanSach/Project_BanSach.csproj -c Release
-        dotnet test Project_BanSach/Project_BanSach.csproj --no-build --collect:"XPlat Code Coverage"
+        dotnet test Project_BanSach.Tests/Project_BanSach.Tests.csproj --no-build --collect:"XPlat Code Coverage"
+
 
     - name: End SonarCloud analysis
       env:
