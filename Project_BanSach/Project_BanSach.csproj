@@ -20,6 +20,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-
+  <ItemGroup>
+    <ProjectReference Include="..\Project_BanSach\Project_BanSach.csproj" />
+  </ItemGroup>
  
 </Project>
